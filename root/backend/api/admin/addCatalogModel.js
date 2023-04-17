@@ -10,6 +10,6 @@ export const catalogSchema = mongoose.Schema({
   
 
 // Define model for catalog item
-var CatalogItem = mongoose.model('CatalogItem', catalogSchema);
+var CatalogItem = mongoose.model('catalogyear', catalogSchema);
 
 export default CatalogItem
