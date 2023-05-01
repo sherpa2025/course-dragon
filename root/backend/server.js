@@ -7,14 +7,14 @@ import connectDB from "./config/db.js";
 
 //--------------- List of Route Resources (add new file paths to routes here) ---------------
 import homeRoutes from "./api/home/homeRoutes.js"
-import userRoutes from "./api/users/userRoutes.js"
+import userRoutes from "./api/user/userRoutes.js"
 import creditsRoutes from "./api/credits/creditsRoutes.js"
 import courseRoutes from "./api/course/courseRoutes.js"
 import instructorScoreRoutes from "./api/instructor-score/instructorScoreRoutes.js"
 import semesterRoutes from "./api/semester/semesterRoutes.js"
 import degreeMapRoutes from "./api/degree-map/degreeMapRoutes.js"
 import addCatalogRoutes from "./api/admin/addCatalogRoutes.js"
-import userRoute from "./api/users/userRoutes.js"
+import userRoute from "./api/user/userRoutes.js"
 import curriculumRoutes from "./api/curriculum/curriculumRoutes.js";
 import colorRoutes from "./api/color/colorRoutes.js";
 import categoryRoutes from "./api/category/categoryRoutes.js";
