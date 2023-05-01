@@ -4,6 +4,10 @@ import dotenv from "dotenv";
 import bodyParser from "body-parser";
 import cors from "cors";
 import connectDB from "./config/db.js";
+import session from 'express-session';
+import passport from 'passport';
+import passportLocalMongoose from 'passport-local-mongoose';
+import UserItem from "./api/user/userModel.js";
 
 //--------------- List of Route Resources (add new file paths to routes here) ---------------
 import homeRoutes from "./api/home/homeRoutes.js"
