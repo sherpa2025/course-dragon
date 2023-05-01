@@ -58,58 +58,7 @@ function Admin() {
         });
     }, []);
   
-    // const createCatalogItem = () => {
-    //   let apiURL = "http://localhost:4001/add-catalog/"
-    //   // Validate that degree and catalogYear fields are not empty
-    //   if (!degree || !catalogYear) {
-    //     console.log('Degree and Catalog Year are required');
-    //     return;
-    //   }
-    //   //make sure that there is no duplicate catalog year for the specific degree 
-    //   const existingItem = catalogItems.find(item => item.catalogYear === catalogYear && item.degree === degree);
-    //   if (existingItem) {
-    //     alert(`A catalog item for ${degree} ${catalogYear} already exists.`);
-    //     return;
-    //   }
-
-    
-    //   // create the new catalog item object
-    //   let newItem = {
-    //     "degree": degree,
-    //     "catalogYear": catalogYear
-    //   };
-    
-    //   // send a POST request to the server to save the new item
-    //   fetch(apiURL, {
-    //     method: 'POST',
-    //     headers: { 'Content-Type': 'application/json' },
-    //     body: JSON.stringify(newItem),
-    //     mode: 'cors'
-    //   })
-    //   .then((response) => {
-    //     if (!response.ok) {
-    //       throw new Error(`HTTP error! Status: ${response.status}`);
-    //     }
-    //     return response.json();
-    //   })
-    //   .then((savedItem) => {
-    //     //add the new item to the catalogItems state
-    //     setCatalogItems([...catalogItems, savedItem]);
-    //     //clear the catalogYear state and close the modal
-    //     setCatalogYear('');
-    //     handleClose();
-    
-    //     // Display a success message to the user
-    //     //alert(`Catalog item with ID ${savedItem._id} has been created successfully.`);
-    //     // Call the createCurriculum function to create a new curriculum for the new catalog item
-    //     createCurriculum(savedItem.degree, savedItem.catalogYear);
-    //   })
-    //   .catch((error) => {
-    //     console.error(`Error creating catalog item: ${error}. Degree: ${degree}, Catalog Year: ${catalogYear}`);
-    //     // Display an error message to the user
-    //     alert(`Error creating catalog item for ${degree} ${catalogYear}. Please try again later.`);
-    //   });
-    // };
+  
     const createCatalogItem = async () => {
       let apiURL = "http://localhost:4001/add-catalog/"
       // Validate that degree and catalogYear fields are not empty
