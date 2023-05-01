@@ -14,6 +14,13 @@ import instructorScoreRoutes from "./api/instructor-score/instructorScoreRoutes.
 import semesterRoutes from "./api/semester/semesterRoutes.js"
 import degreeMapRoutes from "./api/degree-map/degreeMapRoutes.js"
 import addCatalogRoutes from "./api/admin/addCatalogRoutes.js"
+import userRoute from "./api/users/userRoutes.js"
+import curriculumRoutes from "./api/curriculum/curriculumRoutes.js";
+import colorRoutes from "./api/color/colorRoutes.js";
+import categoryRoutes from "./api/category/categoryRoutes.js";
+import descriptionRoutes from "./api/description/descriptionRoutes.js";
+
+
 //Load config
 dotenv.config({ path: "./config/config.env" });
 
@@ -39,6 +46,20 @@ app.use("/instructor-score", instructorScoreRoutes);
 app.use("/semester", semesterRoutes);
 app.use("/degree-map", degreeMapRoutes);
 app.use("/add-catalog", addCatalogRoutes);
+app.use("/curriculum", curriculumRoutes);
+app.use("/colors", colorRoutes);
+app.use("/category", categoryRoutes);
+app.use("/description", descriptionRoutes);
+app.use("/user", userRoute);
+app.use(session({
+  secret: "Our little secret.",
+  resave: false,
+  saveUninitialized: false
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 // example of a route defined here
 /*app.get("/", (req, res) => {
   res.send("employee backende erisildi");

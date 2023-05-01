@@ -55,6 +55,48 @@ export const getCatalog = async (req, res) => {
   }
 };
 
+// Controller function to get a single catalog item by ID
+export const getCatalogItemById = async (req, res) => {
+  try {
+    // Find the catalog item in the database by ID
+    const catalogItem = await CatalogItem.findById(req.params.id);
+    // If the catalog item doesn't exist, send a 404 response to the client
+    if (!catalogItem) {
+      res.status(404).json({ error: 'Catalog item not found' });
+    } else {
+      // Send the catalog item as a JSON response
+      res.json(catalogItem);
+    }
+  } catch (error) {
+    console.error(`Error getting catalog item: ${error}`);
+    // Send an error response to the client
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+// PUT endpoint for updating a catalog item by ID
+export const updateCatalogItem = async (req, res) => {
+  try {
+    // Find the catalog item by ID
+    const item = await CatalogItem.findById(req.params.id);
+
+    if (!item) {
+      return res.status(404).json({ message: 'Catalog item not found.' });
+    }
+
+    // Update the catalog item with the new curriculum ID
+    item.curriculumID = req.body.curriculumID;
+
+    // Save the updated catalog item to the database
+    const savedItem = await item.save();
+
+    // Send a JSON response with the saved catalog item object
+    res.json(savedItem);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error updating catalog item.' });
+  }
+};
 
 
 export default router;

@@ -1,19 +1,14 @@
 import express from "express";
 
 import {
-  getSemester,
-  getSemesters,
-  createSemester,
-  updateSemester,
-  deleteSemester,
+  addSemesters,
+  getSemesters
 } from "./semesterController.js";
 
 const router = express.Router();
 
-router.get("/", getSemesters);
-router.get("/:id", getSemester);
-router.post("/", createSemester);
-router.patch("/:id", updateSemester);
-router.delete("/:id", deleteSemester);
+router.post("/add-semester", addSemesters);
+router.get("/view",getSemesters);
+
 
 export default router;

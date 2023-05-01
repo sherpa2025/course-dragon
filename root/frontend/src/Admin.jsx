@@ -58,7 +58,59 @@ function Admin() {
         });
     }, []);
   
-    const createCatalogItem = () => {
+    // const createCatalogItem = () => {
+    //   let apiURL = "http://localhost:4001/add-catalog/"
+    //   // Validate that degree and catalogYear fields are not empty
+    //   if (!degree || !catalogYear) {
+    //     console.log('Degree and Catalog Year are required');
+    //     return;
+    //   }
+    //   //make sure that there is no duplicate catalog year for the specific degree 
+    //   const existingItem = catalogItems.find(item => item.catalogYear === catalogYear && item.degree === degree);
+    //   if (existingItem) {
+    //     alert(`A catalog item for ${degree} ${catalogYear} already exists.`);
+    //     return;
+    //   }
+
+    
+    //   // create the new catalog item object
+    //   let newItem = {
+    //     "degree": degree,
+    //     "catalogYear": catalogYear
+    //   };
+    
+    //   // send a POST request to the server to save the new item
+    //   fetch(apiURL, {
+    //     method: 'POST',
+    //     headers: { 'Content-Type': 'application/json' },
+    //     body: JSON.stringify(newItem),
+    //     mode: 'cors'
+    //   })
+    //   .then((response) => {
+    //     if (!response.ok) {
+    //       throw new Error(`HTTP error! Status: ${response.status}`);
+    //     }
+    //     return response.json();
+    //   })
+    //   .then((savedItem) => {
+    //     //add the new item to the catalogItems state
+    //     setCatalogItems([...catalogItems, savedItem]);
+    //     //clear the catalogYear state and close the modal
+    //     setCatalogYear('');
+    //     handleClose();
+    
+    //     // Display a success message to the user
+    //     //alert(`Catalog item with ID ${savedItem._id} has been created successfully.`);
+    //     // Call the createCurriculum function to create a new curriculum for the new catalog item
+    //     createCurriculum(savedItem.degree, savedItem.catalogYear);
+    //   })
+    //   .catch((error) => {
+    //     console.error(`Error creating catalog item: ${error}. Degree: ${degree}, Catalog Year: ${catalogYear}`);
+    //     // Display an error message to the user
+    //     alert(`Error creating catalog item for ${degree} ${catalogYear}. Please try again later.`);
+    //   });
+    // };
+    const createCatalogItem = async () => {
       let apiURL = "http://localhost:4001/add-catalog/"
       // Validate that degree and catalogYear fields are not empty
       if (!degree || !catalogYear) {
@@ -71,7 +123,6 @@ function Admin() {
         alert(`A catalog item for ${degree} ${catalogYear} already exists.`);
         return;
       }
-
     
       // create the new catalog item object
       let newItem = {
@@ -80,42 +131,89 @@ function Admin() {
       };
     
       // send a POST request to the server to save the new item
-      fetch(apiURL, {
+      const response = await fetch(apiURL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newItem),
         mode: 'cors'
-      })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((savedItem) => {
-        //add the new item to the catalogItems state
-        setCatalogItems([...catalogItems, savedItem]);
-        //clear the catalogYear state and close the modal
-        setCatalogYear('');
-        handleClose();
-    
-        // Display a success message to the user
-        //alert(`Catalog item with ID ${savedItem._id} has been created successfully.`);
-      })
-      .catch((error) => {
-        console.error(`Error creating catalog item: ${error}. Degree: ${degree}, Catalog Year: ${catalogYear}`);
-        // Display an error message to the user
-        alert(`Error creating catalog item for ${degree} ${catalogYear}. Please try again later.`);
       });
+    
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message);
+      }
+    
+      const savedItem = await response.json();
+    
+      // create the corresponding curriculum for the new catalog item
+      const curriculumID = await createCurriculum(degree, catalogYear);
+    
+      // associate the catalog item with its corresponding curriculum
+      savedItem.curriculumID = curriculumID._id;
+    
+      // send a PUT request to update the catalog item with the curriculum reference
+      const updateResponse = await fetch(`${apiURL}${savedItem._id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(savedItem),
+        mode: 'cors'
+      });
+    
+      if (!updateResponse.ok) {
+        const errorData = await updateResponse.json();
+        throw new Error(errorData.message);
+      }
+    
+      //add the new item to the catalogItems state
+      setCatalogItems([...catalogItems, savedItem]);
+      //clear the catalogYear state and close the modal
+      setCatalogYear('');
+      handleClose();
+    
+      // Display a success message to the user
+      //alert(`Catalog item with ID ${savedItem._id} has been created successfully.`);
     };
     
-    // deleting the catalog item
+    const createCurriculum = async (degree, catalogYear) => {
+      let apiURL = "http://localhost:4001/curriculum/new/";
+    
+      const response = await fetch(apiURL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ degree, catalogYear }),
+      });
+    
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message);
+      }
+    
+      const responseData = await response.json();
+      const newCurriculum = responseData.curriculum;
+      //alert(`New curriculum created for ${newCurriculum.degree} ${newCurriculum.catalogYear}.`);
+      return newCurriculum;
+    };
+    // const getCurriculumId = async (catalogItemId) => {
+    //   try {
+    //     const response = await fetch(`http://localhost:4001/catalog/${catalogItemId}`);
+    //     if (!response.ok) {
+    //       throw new Error(`HTTP error! Status: ${response.status}`);
+    //     }
+    //     const catalogItem = await response.json();
+    //     return catalogItem.curriculumId;
+    //   } catch (error) {
+    //     console.error(`Error getting curriculum id: ${error}`);
+    //     // handle error
+    //   }
+    // };
     const deleteCatalogItem = (id) => {
       let apiURL = `http://localhost:4001/add-catalog/${id}`;
-    
-      // send a DELETE request to the server to delete the item
+
+      // Fetch the catalog item to get the associated curriculum ID
       fetch(apiURL, {
-        method: 'DELETE',
+        method: 'GET',
         headers: { 'Content-Type': 'application/json' },
         mode: 'cors'
       })
@@ -124,6 +222,24 @@ function Admin() {
             throw new Error(`HTTP error! Status: ${response.status}`);
           }
           return response.json();
+        })
+        .then((catalogItem) => {
+          const curriculumId = catalogItem.curriculumID;      // get the curriculumID of the associated catalog
+    
+          // Delete the associated curriculum first
+          return fetch(`http://localhost:4001/curriculum/${curriculumId}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            mode: 'cors'
+          });
+        })
+        .then(() => {
+          // Delete the catalog item
+          return fetch(apiURL, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            mode: 'cors'
+          });
         })
         .then(() => {
           // remove the deleted item from the catalogItems state
@@ -138,8 +254,15 @@ function Admin() {
         });
     };
     
+
+    const viewCatalogItem = (id) => {
+      // Check if any curriculum has been created for the selected catalog item
+      let apiURL = "http://localhost:4001/curriculum/";
+      
+    };
+
+   
     
-  
     return (
         <div>
         
@@ -217,7 +340,7 @@ function Admin() {
                     </div>
                     <hr className="dark horizontal my-0"></hr>
                     <div className="card-footer p-3">
-                      <Button className="buttonSpace" variant="success">
+                      <Button className="buttonSpace" variant="success" onClick={() => viewCatalogItem(item._id)}> 
                         View
                       </Button>
                       <Button className="buttonSpace" variant="warning">

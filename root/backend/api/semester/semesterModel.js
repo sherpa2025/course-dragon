@@ -1,20 +1,10 @@
 import mongoose from 'mongoose';
-import { courseSchema } from '../course/courseModel.js';
 
-export const semesterSchema = mongoose.Schema({
-    term: {
-        type: String,
-        enum: ['fall', 'winter', 'spring', 'summer'],
-        default: 'fall'
-    },
-    year: {
-        type: Number,
-        min: [1973, 'Please enter a valid year'],
-        max: [3000, 'Please enter a valid year']
-    },
-    Courses_list: [courseSchema]
-})
 
-var semesterItem = mongoose.model('semesteritem', semesterSchema);
+export const semesterSchema = new mongoose.Schema({
+    name: String
+  });
 
-export default semesterItem
+const Semester = mongoose.model('Semester', semesterSchema);
+
+export default Semester
