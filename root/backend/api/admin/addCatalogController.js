@@ -6,19 +6,41 @@ const router = express.Router();
 
 
 // API endpoint for creating a new catalog item
-export const addCatalog = async (req, res) => {
-    const { degree, catalogYear } = req.body;
+// export const addCatalog = async (req, res) => {
+//     const { degree, catalogYear } = req.body;
 
-    // Validate that degree and catalogYear fields are not empty
-    if (!degree || !catalogYear) {
-      return res.status(400).json({ error: "Degree and Catalog Year are required" });
-    }
+//     // Validate that degree and catalogYear fields are not empty
+//     if (!degree || !catalogYear) {
+//       return res.status(400).json({ error: "Degree and Catalog Year are required" });
+//     }
   
-    // Create a new catalog item using the CatalogItem model
-    const newCatalogItem = new CatalogItem({ degree, catalogYear });
+//     // Create a new catalog item using the CatalogItem model
+//     const newCatalogItem = new CatalogItem({ degree, catalogYear });
 
     
-    try {
+//     try {
+//     // Save the new catalog item to the database
+//     await newCatalogItem.save();
+
+//     res.status(201).json(newCatalogItem);
+//   } catch (err) {
+//     console.error(err);
+//     res.status(409).json({ success: false, message: 'Failed to create catalog item' });
+//   }
+// };
+// API endpoint for creating a new catalog item
+export const addCatalog = async (req, res) => {
+  const { degree, catalogYear, colorCategory, courseCategory } = req.body;
+
+  // Validate that degree and catalogYear fields are not empty
+  if (!degree || !catalogYear) {
+    return res.status(400).json({ error: "Degree and Catalog Year are required" });
+  }
+
+  // Create a new catalog item using the CatalogItem model
+  const newCatalogItem = new CatalogItem({ degree, catalogYear, colorCategory,courseCategory });
+
+  try {
     // Save the new catalog item to the database
     await newCatalogItem.save();
 
@@ -28,6 +50,7 @@ export const addCatalog = async (req, res) => {
     res.status(409).json({ success: false, message: 'Failed to create catalog item' });
   }
 };
+
 
 export const deleteCatalog = async (req, res) => {
   const { id } = req.params;
@@ -74,29 +97,29 @@ export const getCatalogItemById = async (req, res) => {
   }
 };
 
-// PUT endpoint for updating a catalog item by ID
-export const updateCatalogItem = async (req, res) => {
-  try {
-    // Find the catalog item by ID
-    const item = await CatalogItem.findById(req.params.id);
+// // PUT endpoint for updating a catalog item by ID
+// export const updateCatalogItem = async (req, res) => {
+//   try {
+//     // Find the catalog item by ID
+//     const item = await CatalogItem.findById(req.params.id);
 
-    if (!item) {
-      return res.status(404).json({ message: 'Catalog item not found.' });
-    }
+//     if (!item) {
+//       return res.status(404).json({ message: 'Catalog item not found.' });
+//     }
 
-    // Update the catalog item with the new curriculum ID
-    item.curriculumID = req.body.curriculumID;
+//     // Update the catalog item with the new curriculum ID
+//     item.curriculumID = req.body.curriculumID;
 
-    // Save the updated catalog item to the database
-    const savedItem = await item.save();
+//     // Save the updated catalog item to the database
+//     const savedItem = await item.save();
 
-    // Send a JSON response with the saved catalog item object
-    res.json(savedItem);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Error updating catalog item.' });
-  }
-};
+//     // Send a JSON response with the saved catalog item object
+//     res.json(savedItem);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: 'Error updating catalog item.' });
+//   }
+// };
 
 
 export default router;
