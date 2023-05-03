@@ -18,6 +18,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import {DropdownButton} from "react-bootstrap";
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
+import Table from 'react-bootstrap/Table';
 
 /*** Displays the flowchart view of the web app ***/
 function Admin() {
@@ -204,22 +205,23 @@ function Admin() {
     };
     
 
-    const viewCatalogItem = (id) => {
-      setShowTable(true);
-      setSelectedItemId(id);
+    const viewCatalogItem = (item) => {
+      //setShowTable(true);
+      setSelectedItemId(item);
     };
 
     const closeTable = () => {
-      setShowTable(false);
+      //setShowTable(false);
+      setSelectedItemId(null);
     }
     
-    const table = (
-      <div className="table-responsive">
-        <table className="table table-bordered table-hover">
-          {/* ... table content here */}
-        </table>
-      </div>
-    );
+    // const table = (
+    //   <div className="table-responsive">
+    //     <table className="table table-bordered table-hover">
+    //       {/* ... table content here */}
+    //     </table>
+    //   </div>
+    // );
 
 
 
@@ -319,53 +321,55 @@ function Admin() {
             </Modal>
       
             <div className="row">
-            {catalogItems
-                .filter((item) => item.degree === degree)
-                .sort((a, b) => b.catalogYear.localeCompare(a.catalogYear))
-                .map((item) => (
-                <div className="col-xl-3 col-sm-6 mb-xl-0 mb-3" key={item.id} style={{marginTop:'10px'}}>
-                  <div className="card">
-                    <div className="card-header p-3 pt-2">
-                      <div className="icon icon-lg icon-shape bg-gradient-dark shadow-dark text-center border-radius-xl mt-n4 position-absolute">
-                        {/* <i className="material-icons opacity-10">BSCS</i> */}
-                      </div>
-                      <div className="text-end pt-1">
-                        <p className="text-sm mb-0 text-capitalize">{item.degree}</p>
-                        <h4 className="mb-0">Catalog Year {item.catalogYear}</h4>
-                      </div>
-                    </div>
-                    <hr className="dark horizontal my-0"></hr>
-                    <div className="card-footer p-3">
-                      <Button className="buttonSpace" variant="success" onClick={() => viewCatalogItem(item._id)}> 
-                        View
-                      </Button>            
-                      <Button className="buttonSpace" variant="danger" onClick={() => deleteCatalogItem(item._id)}>Delete</Button>
-                      <Button className="buttonSpace" variant="secondary" onClick={closeTable}>Close</Button>
-                      {showTable && selectedItemId === item._id && (
-                          <table>
-                            <thead>
-                              <tr>
-                                <th>Course Category</th>
-                                <th>Credits</th>
-                                <th>Notes</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {item.courseCategory.map((category) => (
-                                <tr key={category._id}>
-                                  <td>{category.name}</td>
-                                  <td>{category.credits}</td>
-                                  <td>{category.notes}</td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        )}
-                    </div>
-                  </div>
-                </div>
-              ))}
+  {catalogItems
+    .filter((item) => item.degree === degree)
+    .sort((a, b) => b.catalogYear.localeCompare(a.catalogYear))
+    .map((item) => (
+      <div className="col-xl-3 col-sm-6 mb-xl-0 mb-3" key={item.id} style={{marginTop:'10px'}}>
+        <div className="card">
+          <div className="card-header p-3 pt-2">
+            <div className="icon icon-lg icon-shape bg-gradient-dark shadow-dark text-center border-radius-xl mt-n4 position-absolute">
+              {/* <i className="material-icons opacity-10">BSCS</i> */}
             </div>
+            <div className="text-end pt-1">
+              <p className="text-sm mb-0 text-capitalize">{item.degree}</p>
+              <h4 className="mb-0">Catalog Year {item.catalogYear}</h4>
+            </div>
+          </div>
+          <hr className="dark horizontal my-0"></hr>
+          <div className="card-footer p-3">
+            <Button className="buttonSpace" variant="success" onClick={() => viewCatalogItem(item)}> 
+              View
+            </Button>            
+            <Button className="buttonSpace" variant="danger" onClick={() => deleteCatalogItem(item._id)}>Delete</Button>
+            <Button className="buttonSpace" variant="secondary" onClick={closeTable}>Close</Button>
+          </div>
+        </div>
+      </div>
+    ))}
+</div>
+      {selectedItemId && (
+        <div className="table-responsive">
+          <Table className='listview-table'>
+            <thead>
+              <tr>
+                <th>Course Category</th>
+                <th>Credits</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              {selectedItemId.courseCategory.map((category) => (
+                <tr key={category._id}>
+                  <td>{category.name}</td>
+                  <td>{category.credits}</td>
+                  <td>{category.notes}</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </div>
+      )}
           </>
         )}
       </div>
