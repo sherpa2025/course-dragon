@@ -26,10 +26,11 @@ function Admin() {
     const [catalogYear, setCatalogYear] = useState('');
     const [degree, setDegree] = useState('');
     const [colorCategories, setColorCategories] = useState([{ name: '', color: '' }]);
-    const [courseCategories, setCourseCategories] = useState([{ name: '', notes: '' }]);
-    const [showTable, setShowTable] = useState(false);
+    const [courseCategories, setCourseCategories] = useState([{ name: '', credits: '',notes: '' }]);
+    const [courseList, setCourseList] = useState([{ name: '', credits: '', prereqs: [], categoryName: '', semester: '', courseColor: '' }]);
     const [selectedItemId, setSelectedItemId] = useState(null);
 
+    // 3 handle functions for the information given in the Color category field
     const handleColorChange = (e, index, property) => {
       const { value } = e.target;
       setColorCategories((prevState) => {
@@ -55,6 +56,7 @@ function Admin() {
       });
     };
 
+  // 3 handle functions for the information given in the Course category field
     const handleCourseChange = (e, index, property) => {
       const { value } = e.target;
       setCourseCategories((prevState) => {
@@ -75,13 +77,42 @@ function Admin() {
     const handleCourseAdd = () => {
       setCourseCategories((prevState) => {
         const updatedCategories = [...prevState];
-        updatedCategories.push({ name: '', color: '' });
+        updatedCategories.push({ name: '', credits: '', notes: '' });
         return updatedCategories;
       });
     };
 
+    // 3 handle functions for the information given in the Course Information field for course list
+    const handleListChange = (e, index, key) => {
+      const { value } = e.target;
+      const regex = /,\s*/; // regex to separate data after comma and ignore any white spaces
+      setCourseList(prevState => {
+        const updatedState = [...prevState];
+        updatedState[index][key] = key === "prereqs" ? value.split(regex) : value;
+        return updatedState;
+      });
+    };
     
-
+    
+    
+    const handleListAdd = () => {
+      setCourseList((prevState) => {
+        const updatedList = [...prevState];
+        updatedList.push({ name: '', credits: '', prereqs: [], categoryName: '', semester: '', courseColor: '' });
+        return updatedList;
+      });
+    };
+    
+    
+    const handleListDelete = (index) => {
+      setCourseList((prevList) => {
+        const newList = [...prevList];
+        newList.splice(index, 1);
+        return newList;
+      });
+    };
+    
+    
 
 
     const handleClose = () => setShow(false);
@@ -125,8 +156,8 @@ function Admin() {
         let apiURL = "http://localhost:4001/add-catalog/"
         
         // Validate that degree, catalogYear, and courseCategory fields are not empty
-        if (!degree || !catalogYear || colorCategories.length === 0 || courseCategories.length === 0) {
-          console.log('Degree, Catalog Year, Course Category, and color category are required');
+        if (!degree || !catalogYear || colorCategories.length === 0 || courseCategories.length === 0 || courseList.length === 0) {
+          console.log('Degree, Catalog Year, Course Category, color category, and course list are required');
           return;
         }
       
@@ -142,7 +173,8 @@ function Admin() {
           "degree": degree,
           "catalogYear": catalogYear,
           "colorCategory": colorCategories,
-          "courseCategory": courseCategories
+          "courseCategory": courseCategories,
+          "courseList" : courseList
         };
       
         // send a POST request to the server to save the new item
@@ -215,16 +247,6 @@ function Admin() {
       setSelectedItemId(null);
     }
     
-    // const table = (
-    //   <div className="table-responsive">
-    //     <table className="table table-bordered table-hover">
-    //       {/* ... table content here */}
-    //     </table>
-    //   </div>
-    // );
-
-
-
     return (
         <div>
         
@@ -299,13 +321,40 @@ function Admin() {
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'row' }}>
                           <input type="number" placeholder="Credit" value={category.credits} onChange={(e) => handleCourseChange(e, index, 'credits')} style={{ width: '30%', marginRight: '10px', marginTop: '2px' }} />
-                          <input type="text" placeholder="Notes" value={category.notes} onChange={(e) => handleCourseChange(e, index, 'notes')} style={{ width: '70%', marginTop: '2px' }} />
+                          <input type="text" placeholder="Notes (optional)" value={category.notes} onChange={(e) => handleCourseChange(e, index, 'notes')} style={{ width: '70%', marginTop: '2px' }} />
                           <button type="button" style={{ marginLeft: '10px',  marginTop: '2px' }} onClick={() => handleCourseDelete(index)}>Delete</button>
                         </div>
-                      </div>
-                      
+                      </div> 
                     ))}
                     <button type="button" style={{marginTop:'10px'}} onClick={handleCourseAdd}>Add Category</button>
+                    </div>
+                  </label>
+                  <br />
+                  <br />
+                  <label>
+                    Course Information:
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      {courseList.map((category, index) => (
+                        <div key={index} style={{ display: 'flex', flexDirection: 'column' }}>
+                        <div style={{ display: 'flex', flexDirection: 'row' }}>
+                        <input type="text" placeholder="Name (CS 2421)" value={category.name} onChange={(e) => handleListChange(e, index, 'name')} style={{width: '60%', marginTop:'10px'}} />
+                        <input type="number" placeholder="Credit hours" value={category.credits} onChange={(e) => handleListChange(e, index, 'credits')} style={{width: '40%', marginLeft:'10px' , marginTop: '10px'}}/>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'row' }}>
+                        <textarea rows="3" placeholder="Pre reqs - optional (comma separated)" value={category.prereqs.join(',')} onChange={(e) => handleListChange(e, index, 'prereqs')} style={{width: '100%', marginRight: '10px', marginTop: '2px' }} />
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'row' }}>
+                        <input type="text" placeholder="Category Name (Gen Ed: Core Arts)" value={category.categoryName} onChange={(e) => handleListChange(e, index, 'categoryName')} style={{ width: '100%', marginTop: '2px' }} />
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'row' }}>
+            
+                          <input type="text" placeholder="Semester (Fall 1) (optional)" value={category.semester} onChange={(e) => handleListChange(e, index, 'semester')} style={{ width: '50%', marginTop: '2px' }} />
+                          <input type="text" placeholder="Color(CS CORE) (optional)" value={category.courseColor} onChange={(e) => handleListChange(e, index, 'courseColor')} style={{ width: '50%', marginLeft: '10px', marginTop: '2px' }} />
+                          <button type="button" style={{ marginLeft: '10px',  marginTop: '2px' }} onClick={() => handleListDelete(index)}>Delete</button>
+                        </div>
+                      </div> 
+                    ))}
+                    <button type="button" style={{marginTop:'10px'}} onClick={handleListAdd}>Add Category</button>
                     </div>
                   </label>
                 </form>

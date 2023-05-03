@@ -30,7 +30,7 @@ const router = express.Router();
 // };
 // API endpoint for creating a new catalog item
 export const addCatalog = async (req, res) => {
-  const { degree, catalogYear, colorCategory, courseCategory } = req.body;
+  const { degree, catalogYear, colorCategory, courseCategory, courseList } = req.body;
 
   // Validate that degree and catalogYear fields are not empty
   if (!degree || !catalogYear) {
@@ -38,7 +38,7 @@ export const addCatalog = async (req, res) => {
   }
 
   // Create a new catalog item using the CatalogItem model
-  const newCatalogItem = new CatalogItem({ degree, catalogYear, colorCategory,courseCategory });
+  const newCatalogItem = new CatalogItem({ degree, catalogYear, colorCategory,courseCategory, courseList });
 
   try {
     // Save the new catalog item to the database
