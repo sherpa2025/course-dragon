@@ -27,9 +27,15 @@ function Admin() {
     const [degree, setDegree] = useState('');
     const [colorCategories, setColorCategories] = useState([{ name: '', color: '' }]);
     const [courseCategories, setCourseCategories] = useState([{ name: '', credits: '',notes: '' }]);
-    const [courseList, setCourseList] = useState([{ name: '', credits: '', prereqs: [], categoryName: '', semester: '', courseColor: '' }]);
+    const [courseList, setCourseList] = useState([{ courseCode: '', name: '', credits: '', prereqs: [], categoryName: '', semester: '', courseColor: '' }]);
     const [selectedItemId, setSelectedItemId] = useState(null);
 
+
+    const [expandedRows, setExpandedRows] = useState({});
+
+    const handleRowClick = (id) => {
+      setExpandedRows({...expandedRows, [id]: !expandedRows[id]});
+    };
     // 3 handle functions for the information given in the Color category field
     const handleColorChange = (e, index, property) => {
       const { value } = e.target;
@@ -98,7 +104,7 @@ function Admin() {
     const handleListAdd = () => {
       setCourseList((prevState) => {
         const updatedList = [...prevState];
-        updatedList.push({ name: '', credits: '', prereqs: [], categoryName: '', semester: '', courseColor: '' });
+        updatedList.push({ courseCode:'', name: '', credits: '', prereqs: [], categoryName: '', semester: '', courseColor: '' });
         return updatedList;
       });
     };
@@ -246,6 +252,8 @@ function Admin() {
       //setShowTable(false);
       setSelectedItemId(null);
     }
+
+   
     
     return (
         <div>
@@ -337,8 +345,9 @@ function Admin() {
                       {courseList.map((category, index) => (
                         <div key={index} style={{ display: 'flex', flexDirection: 'column' }}>
                         <div style={{ display: 'flex', flexDirection: 'row' }}>
-                        <input type="text" placeholder="Name (CS 2421)" value={category.name} onChange={(e) => handleListChange(e, index, 'name')} style={{width: '60%', marginTop:'10px'}} />
-                        <input type="number" placeholder="Credit hours" value={category.credits} onChange={(e) => handleListChange(e, index, 'credits')} style={{width: '40%', marginLeft:'10px' , marginTop: '10px'}}/>
+                        <input type="text" placeholder="MATH 2411" value={category.courseCode} onChange={(e) => handleListChange(e, index, 'courseCode')} style={{width: '20%', marginTop:'10px'}} />
+                        <input type="text" placeholder="Name (Calculas I)" value={category.name} onChange={(e) => handleListChange(e, index, 'name')} style={{width: '60%', marginTop:'10px'}} />
+                        <input type="number" placeholder="Credit" value={category.credits} onChange={(e) => handleListChange(e, index, 'credits')} style={{width: '20%', marginLeft:'10px' , marginTop: '10px'}}/>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'row' }}>
                         <textarea rows="3" placeholder="Pre reqs - optional (comma separated)" value={category.prereqs.join(',')} onChange={(e) => handleListChange(e, index, 'prereqs')} style={{width: '100%', marginRight: '10px', marginTop: '2px' }} />
@@ -408,13 +417,27 @@ function Admin() {
               </tr>
             </thead>
             <tbody>
-              {selectedItemId.courseCategory.map((category) => (
-                <tr key={category._id}>
-                  <td>{category.name}</td>
-                  <td>{category.credits}</td>
-                  <td>{category.notes}</td>
-                </tr>
-              ))}
+            {selectedItemId.courseCategory.map((category) => (
+  <React.Fragment key={category._id}>
+    <tr onClick={() => handleRowClick(category._id)}>
+      <td>{category.name}</td>
+      <td>{category.credits}</td>
+      <td>{category.notes}</td>
+    </tr>
+    {expandedRows[category._id] && (
+      <>
+        {courseList.filter((course) => course.categoryName === category.name).map((course) => (
+          <tr key={course._id}>
+            <td>{course.courseCode} - {course.name}</td>
+            <td>{course.credits}</td>
+            <td>{course.prereqs}</td>
+          </tr>
+        ))}
+      </>
+    )}
+  </React.Fragment>
+))}
+
             </tbody>
           </Table>
         </div>

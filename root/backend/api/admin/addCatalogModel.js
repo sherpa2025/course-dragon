@@ -13,6 +13,7 @@ export const courseCategory = new mongoose.Schema({
 });
 
 export const courseList = new mongoose.Schema({
+  courseCode: { type: String, required: true },
   name: { type: String, required: true },
   credits: { type: Number, required: true },
   prereqs: [{ type: String, required: false }],
