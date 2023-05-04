@@ -1,13 +1,13 @@
 import dotenv from 'dotenv';
-dotenv.config({ path: './api/config/config.env' });
+dotenv.config({ path: './api/config/config.env' });             //make sure this path is correct to get the secret key
 import express from "express";
 import mongoose from "mongoose";
 import session from 'express-session';
 import passport from 'passport';
 import passportLocalMongoose from 'passport-local-mongoose';
 import UserItem from "./userModel.js";
-import { Strategy as LocalStrategy } from 'passport-local';
-import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
+// import { Strategy as LocalStrategy } from 'passport-local';
+// import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 
 
 const router = express.Router();
@@ -49,18 +49,18 @@ export const loginUser = async (req, res) => {
 
 };
 
-export const googleSignin = async () => {
-  passport.authenticate('google', { scope: ["profile"] })
-};
+// export const googleSignin = async () => {
+//   passport.authenticate('google', { scope: ["profile"] })
+// };
 
-export const googleSignup = async (req, res) => {
+// export const googleSignup = async (req, res) => {
   
-  passport.authenticate('google', { failureRedirect: "http://localhost:3003" }),
-  function(req, res) {
-    // Successful authentication, redirect to secrets.
-    res.redirect("http://localhost:3003/");
-}
-};
+//   passport.authenticate('google', { failureRedirect: "http://localhost:3003" }),
+//   function(req, res) {
+//     // Successful authentication, redirect to secrets.
+//     res.redirect("http://localhost:3003/");
+// }
+// };
 
 
 export default router;

@@ -46,15 +46,7 @@ function LoginButton() {
       setErrorMessage("Email and Password are required");
       return;
     }
-  
-    // // make sure that there is no duplicate email
-   
-    //     const existingItem = data.find((item) => item.email === email);
-    //     if (existingItem) {
-    //       alert(`A user with email ${email} already exists.`);
-    //       return;
-    //     }
-  
+
         // create the new user object
         let newUser = {
           "username": email,
@@ -75,7 +67,6 @@ function LoginButton() {
             setPassword('');
             // alert(`New user created: ${email}`);
             setShowSuccessMessage(true);    //shows the message on the screen
-
           })
                 
       .catch((error) => {
@@ -128,15 +119,16 @@ function LoginButton() {
       })
   };
   
-  const fetchGoogleAuth = async () => {
-    try {
-      const response = await fetch('http://localhost:4001/auth/google');
-      const data = await response.json();
-      console.log(data);
-    } catch (error) {
-      console.error(error);
-    }
-  }
+  // Google OAuth code
+  // const fetchGoogleAuth = async () => {
+  //   try {
+  //     const response = await fetch('http://localhost:4001/auth/google');
+  //     const data = await response.json();
+  //     console.log(data);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }
   
   const handleLogout = () => {
     // code to handle user logout
@@ -149,7 +141,7 @@ function LoginButton() {
     <div>
       {isLoggedIn ? (
         <div>
-        <p onClick={handleLogOutClick}>Test User</p>
+        <p onClick={handleLogOutClick}>{email} </p>
         <Modal
           show={showLogOutForm}
           onHide={handleClose}
@@ -159,7 +151,7 @@ function LoginButton() {
             <Modal.Title> {email} </Modal.Title>
           </Modal.Header>
           <Modal.Footer>
-            <p className="logout-button" onClick={handleLogout}>Log Out</p>
+            <Button type="submit" variant="info" onClick={handleLogout}>Log Out</Button>
           </Modal.Footer>
         </Modal>
       </div>
@@ -182,11 +174,11 @@ function LoginButton() {
               Login
             </Button>
           </div>
-          <div className="d-grid gap-2">
+          {/* <div className="d-grid gap-2">
             <Button type="submit" variant="info" size="lg" onClick ={fetchGoogleAuth} >
               Sign In with Google
             </Button>
-          </div>
+          </div> */}
           {ErrorMessage && (
           <div className="alert alert-danger" role="alert">
             {ErrorMessage}
@@ -230,11 +222,11 @@ function LoginButton() {
               Signup
             </Button>
           </div>
-          <div className="d-grid gap-2">
+          {/* <div className="d-grid gap-2">
             <Button type="submit" variant="info" size="lg" href="/auth/google">
               Sign Up with Google
             </Button>
-          </div>
+          </div> */}
           {ErrorMessage && (
           <div className="alert alert-danger" role="alert">
             {ErrorMessage}

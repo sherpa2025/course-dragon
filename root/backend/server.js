@@ -4,10 +4,9 @@ import dotenv from "dotenv";
 import bodyParser from "body-parser";
 import cors from "cors";
 import connectDB from "./config/db.js";
-import session from 'express-session';
-import passport from 'passport';
-import passportLocalMongoose from 'passport-local-mongoose';
-import UserItem from "./api/user/userModel.js";
+//import session from 'express-session';
+//import passport from 'passport';
+
 
 //--------------- List of Route Resources (add new file paths to routes here) ---------------
 import homeRoutes from "./api/home/homeRoutes.js"
@@ -55,14 +54,14 @@ app.use("/colors", colorRoutes);
 app.use("/category", categoryRoutes);
 app.use("/description", descriptionRoutes);
 app.use("/user", userRoute);
-app.use(session({
-  secret: "Our little secret.",
-  resave: false,
-  saveUninitialized: false
-}));
+// app.use(session({
+//   secret: "",
+//   resave: false,
+//   saveUninitialized: false
+// }));
 
-app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.initialize());
+// app.use(passport.session());
 
 // example of a route defined here
 /*app.get("/", (req, res) => {
